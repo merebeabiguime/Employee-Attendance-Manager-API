@@ -10,9 +10,7 @@ DotNetEnv.Env.Load();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-Console.WriteLine($"MYSQL_HOST: {Environment.GetEnvironmentVariable("MYSQL_HOST")}");
-Console.WriteLine($"MYSQL_PORT: {Environment.GetEnvironmentVariable("MYSQL_PORT")}");
+builder.Services.AddControllers();
 
 var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
 
@@ -29,6 +27,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.MapControllers();
 
 app.Run();
 
