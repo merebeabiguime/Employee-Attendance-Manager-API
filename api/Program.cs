@@ -1,9 +1,22 @@
+using api.Data;
+using DotNetEnv;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+DotNetEnv.Env.Load();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+Console.WriteLine($"MYSQL_HOST: {Environment.GetEnvironmentVariable("MYSQL_HOST")}");
+Console.WriteLine($"MYSQL_PORT: {Environment.GetEnvironmentVariable("MYSQL_PORT")}");
+
+var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
+
+builder.Services.AddDbContext<ApplicationDBContext>();
 
 var app = builder.Build();
 
