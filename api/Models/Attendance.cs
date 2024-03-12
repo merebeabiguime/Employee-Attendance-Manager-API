@@ -8,7 +8,6 @@ namespace api.Models
     public class Attendance
     {
         public int Id { get; set; }
-        public DateTime Date { get; set; }
-        public String Hour { get; set; } = String.Empty;
+        public DateTime DateTimeValue { get; set; }
     }
 }
