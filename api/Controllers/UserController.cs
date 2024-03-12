@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using api.Data;
+using api.Mappers;
 
 namespace api.Controllers
 {
@@ -20,7 +21,7 @@ namespace api.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var users = _context.Users.ToList();
+            var users = _context.Users.ToList().Select(s => s.ToUserDto());
             if (users == null)
             {
                 return NotFound();
@@ -37,7 +38,7 @@ namespace api.Controllers
             {
                 return NotFound();
             }
-            return Ok(user);
+            return Ok(user.ToUserDto());
         }
     }
 }
