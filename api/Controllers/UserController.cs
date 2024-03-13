@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using api.Data;
 using api.Mappers;
+using api.Dtos;
 
 namespace api.Controllers
 {
@@ -39,6 +40,43 @@ namespace api.Controllers
                 return NotFound();
             }
             return Ok(user.ToUserDto());
+        }
+
+        [HttpPost]
+        public IActionResult Create([FromBody] CreateUserRequestDto userDto)
+        {
+            var userModel = userDto.ToUserFromCreateDto();
+            _context.Users.Add(userModel);
+            _context.SaveChanges();
+            return CreatedAtAction("GetById", new { id = userModel.Id }, userModel.ToUserDto());
+        }
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult Update([FromRoute] int id, [FromBody] UpdateUserRequestDto userDto)
+        {
+            var userModel = _context.Users.FirstOrDefault(s => s.Id == id);
+            if (userModel == null)
+            {
+                return NotFound();
+            }
+            _context.Entry(userModel).CurrentValues.SetValues(userDto);
+            _context.SaveChanges();
+
+            return Ok(userModel.ToUserDto());
+        }
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult Delete([FromRoute] int id)
+        {
+            var userModel = _context.Users.FirstOrDefault(s => s.Id == id);
+            if (userModel == null)
+            {
+                return NotFound();
+            }
+            _context.Users.Remove(userModel);
+            _context.SaveChanges();
+
+            return NoContent();
         }
     }
 }

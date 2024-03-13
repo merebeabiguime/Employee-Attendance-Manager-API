@@ -13,11 +13,22 @@ namespace api.Mappers
         {
             return new UserDto
             {
+                Id = userModel.Id,
                 FirstName = userModel.FirstName,
                 LastName = userModel.LastName,
                 Uid = userModel.Uid,
                 Role = userModel.Role,
-                CompanyName = userModel.Company.CompanyName,
+                CompanyName = userModel?.Company?.CompanyName ?? "",
+            };
+        }
+        public static User ToUserFromCreateDto(this CreateUserRequestDto userModel)
+        {
+            return new User
+            {
+                FirstName = userModel.FirstName,
+                LastName = userModel.LastName,
+                Uid = userModel.Uid,
+                Role = userModel.Role,
             };
         }
     }
