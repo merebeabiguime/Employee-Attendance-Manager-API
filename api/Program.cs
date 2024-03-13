@@ -1,4 +1,6 @@
 using api.Data;
+using api.Repositories;
+using api.Interfaces;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +17,8 @@ builder.Services.AddControllers();
 var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
 
 builder.Services.AddDbContext<ApplicationDBContext>();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
