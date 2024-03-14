@@ -7,6 +7,7 @@ using api.Data;
 using api.Mappers;
 using api.Dtos;
 using Microsoft.EntityFrameworkCore;
+using api.Interfaces;
 
 namespace api.Controllers
 {
@@ -15,19 +16,17 @@ namespace api.Controllers
     public class UserController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
-        public UserController(ApplicationDBContext context)
+        private readonly IUserRepository _repository;
+        public UserController(ApplicationDBContext context, IUserRepository repository)
         {
             _context = context;
+            _repository = repository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var users = await _context.Users.ToListAsync();
-            if (users == null)
-            {
-                return NotFound();
-            }
+            var users = await _repository.GetAllAsync();
 
             var userDto = users.Select(s => s.ToUserDto());
 
@@ -37,7 +36,7 @@ namespace api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _repository.GetByIdAsync(id);
 
             if (user == null)
             {
@@ -49,37 +48,30 @@ namespace api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateUserRequestDto userDto)
         {
-            var userModel = userDto.ToUserFromCreateDto();
-            await _context.Users.AddAsync(userModel);
-            await _context.SaveChangesAsync();
+            var userModel = await _repository.CreateAsync(userDto.ToUserFromCreateDto());
             return CreatedAtAction("GetById", new { id = userModel.Id }, userModel.ToUserDto());
         }
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateUserRequestDto userDto)
         {
-            var userModel = await _context.Users.FirstOrDefaultAsync(s => s.Id == id);
+            var userModel = await _repository.UpdateAsync(id, userDto);
             if (userModel == null)
             {
                 return NotFound();
             }
-            _context.Entry(userModel).CurrentValues.SetValues(userDto);
-            await _context.SaveChangesAsync();
-
             return Ok(userModel.ToUserDto());
         }
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var userModel = await _context.Users.FirstOrDefaultAsync(s => s.Id == id);
+            var userModel = await _repository.DeleteAsync(id);
+
             if (userModel == null)
             {
                 return NotFound();
             }
-            _context.Users.Remove(userModel);
-            await _context.SaveChangesAsync();
-
             return NoContent();
         }
     }
