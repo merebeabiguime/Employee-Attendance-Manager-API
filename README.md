@@ -19,7 +19,7 @@ Employee Management System is a project developed in C# which aims to streamline
 
 ### Setup
 
-1. Clone the repository: `git clone https://github.com/your-username/employee-management-system.git`
+1. Clone the repository: `git clone https://github.com/merebeabiguime/Employee-Attendance-Manager-API.git`
 2. Navigate to the backend directory: `cd employee-management-system/backend`
 3. Restore dependencies: `dotnet restore`
 4. Configure MySQL connection string in `appsettings.json`
